@@ -3,6 +3,10 @@ body {
     color: var(--text)
 }
 
+strong {
+    font-weight: 900 !important;
+}
+
 .main-body {
     width: 100%;
     height: auto;
@@ -19,22 +23,37 @@ body {
     align-content: center;
     flex-flow: column nowrap;
     margin: 50px 0;
-    width: clamp(400px, 70%, 1300px);
+    margin-top: 130px;
+    width: clamp(250px, 70%, 1300px);
+}
+
+#title h1 {
+    font-family: "Zalando Sans SemiExpanded", sans-serif;
+    font-weight: lighter;
+    font-size: 80px;
+}
+
+#title strong {
+    font-size: 120px;
 }
 
 #title p {
-    color: var(--text-muted);
+    color: var(--text);
+    font-weight: 200 !important;
     margin: 10px 0;
+    font-size: 30px;
 }
 
 #login {
     cursor: pointer;
     height: 30px;
+    backdrop-filter: blur(8.8px);
+    -webkit-backdrop-filter: blur(8.8px);
     width: clamp(150px, 5%, 300px);
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 5px;
-    border: 1px solid var(--text-muted);
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+    border-radius: 30px;
+    border: 1px solid var(--text);
     position: absolute;
     right: 10px;
     top: 10px;
@@ -52,9 +71,9 @@ body {
     content: '';
     position: absolute;
     width: 0;
-    height: 100%;
+    height: 102%;
     transition: 0.1s;
-    background: var(--text);
+    background: rgba(255,255,255,0.8);
     color: var(--text);
     top: 50%;
     transform: translate(0, -50%);
@@ -67,4 +86,173 @@ body {
 
 #login:hover a {
     color: var(--bg)
+}
+
+#login:hover {
+    scale: 1.03;
+    border-color: var(--text);
+    border-radius: 30px;
+    font-weight: bolder;
+}
+
+#app {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#app {
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+    font-family: "Montserrat", serif;
+}
+
+#app a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.hero {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#app h1,#app  h2,#app  p {
+    margin: 0;
+    padding: 0;
+    color: white;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 1);
+    line-height: 100%;
+    user-select: none;
+}
+
+#app h1 {
+    font-size: 80px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+#app h2 {
+    font-size: 60px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+#canvas {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.glass-effect {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gloss {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+    rgb(255,255,255) 0%,
+    rgba(255,255,255,0) 50%,
+    rgba(255,255,255,0) 100%
+    );
+    will-change: opacity;
+    transition: opacity 0.2s ease-out;
+}
+
+#credit {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.1));
+    padding: 10px 0;
+}
+
+#credit a {
+    color: var(--text);
+}
+
+.glass-card {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: flex-start;
+    flex-flow: column nowrap;
+    padding: 10px;
+    min-width: 200px;
+    margin: 15px;
+    transition: 0.1s;
+    overflow: hidden;
+    min-height: 300px;
+    z-index: 2;
+    color: white;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+    position: relative;
+}
+
+#cards {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row wrap;
+    padding: 40px 0;
+    opacity: 1;
+    animation: cardFadeIn forwards 0.5s ease-out;
+}
+
+@keyframes cardFadeIn {
+    from {
+        transform: translateY(30px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.center-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.flex-row {
+    flex-flow: row nowrap;
+}
+
+.hover-card {
+    position: relative;
+    overflow: hidden;
 }

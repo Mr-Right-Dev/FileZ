@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="pallet.css">
     <link rel="stylesheet" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FileZ</title>
 </head>
 <body>
@@ -13,16 +14,88 @@
         </a>
     </button>
 
+    <div id="app">
+        <canvas id="canvas"></canvas>
+    </div>
+
     <div class="main-body">
         <section id="title">
-            <h1><a class="emoji-font">🗃️</a> FileZ</h1>
+            <h1>FILE<strong>Z</strong></h1>
             <p>
                 Welcome to FileZ, this is project with the goal of self-hosted file server.
                 <br>
                 And also multi-user service. Where the users can share file between them.
             </p>
         </section>
+        <section id="cards">
+            <div class="glass-card glass-effect hover-card">
+                <div class="gloss"></div>
+                <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
+                    <img src="icons/group.svg" style="margin-right: 10px;">
+                    <h1>Multiple Users</h1>
+                </header>
+                <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
+                    Create multiple accounts, upload and manage files, and share content securely between users.
+                </p>
+            </div>
+            <div class="glass-card glass-effect hover-card">
+                <div class="gloss"></div>
+                <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
+                    <img src="icons/group.svg" style="margin-right: 10px;">
+                    <h1>Multiple Users</h1>
+                </header>
+                <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
+                    Create multiple accounts, upload and manage files, and share content securely between users.
+                </p>
+            </div>
+            <div class="glass-card glass-effect hover-card">
+                <div class="gloss"></div>
+                <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
+                    <img src="icons/group.svg" style="margin-right: 10px;">
+                    <h1>Multiple Users</h1>
+                </header>
+                <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
+                    Create multiple accounts, upload and manage files, and share content securely between users.
+                </p>
+            </div>
+        </section>
+    </div>
+    <div id="credit">
+        <a href="https://codepen.io/soju22">Screen effect by Kevin Levron.</a>
     </div>
 
+    <!-- https://codepen.io/soju22/pen/qEbdVjK screen effect creator -->
+    <script type="module">
+        // Licence CC BY-NC-SA 4.0
+        // Attribution — You must give appropriate credit.
+        // Non Commercial — You may not use the material for commercial purposes.
+
+        import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
+
+        const app = TubesCursor(document.getElementById('canvas'), {
+            tubes: {
+                colors: ["#f967fb", "#53bc28", "#6958d5"],
+                lights: {
+                    intensity: 200,
+                    colors: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
+                }
+            }
+        })
+
+        document.body.addEventListener('click', () => {
+            const colors = randomColors(3)
+            const lightsColors = randomColors(4)
+            console.log(colors, lightsColors)
+            app.tubes.setColors(colors)
+            app.tubes.setLightsColors(lightsColors)
+        })
+
+        function randomColors (count) {
+            return new Array(count)
+                .fill(0)
+                .map(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'))
+        }
+    </script>
+    <script src="index.js"></script>
 </body>
 </html>
