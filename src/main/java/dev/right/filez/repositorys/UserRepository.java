@@ -1,6 +1,7 @@
 package dev.right.filez.repositorys;
 
-import dev.right.filez.storage.User;
+import dev.right.filez.model.User;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,6 +29,7 @@ public class UserRepository {
             user.setUsername(rs.getString("username"));
             user.setAccessLevel(User.AccessLevel.valueOf(rs.getString("accessLevel")));
             user.setFilesTotalSizeCap(rs.getLong("filesTotalSizeCap"));
+            user.setPassword(rs.getString("password"));
 
             return user;
         }
@@ -40,13 +42,19 @@ public class UserRepository {
 
     public void save(User user) {
         template.update(
-                "INSERT INTO user (email, authProvider, profileImageId, username, accessLevel, filesTotalSizeCap) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO user (email, authProvider, profileImageId, username, accessLevel, filesTotalSizeCap, password) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 user.getEmail(),
                 user.getAuthProvider(),
                 user.getProfileImageId(),
                 user.getUsername(),
                 user.getAccessLevel(),
-                user.getFilesTotalSizeCap()
+                user.getFilesTotalSizeCap(),
+                user.getPassword()
         );
+    }
+
+    @Nullable
+    public User getUserByEmail(String email) {
+        return template.queryForObject("SELECT * FROM user WHERE email=? LIMIT 1;", new Object[]{email}, rowMapper);
     }
 }

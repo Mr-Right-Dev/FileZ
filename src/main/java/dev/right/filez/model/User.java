@@ -1,4 +1,4 @@
-package dev.right.filez.storage;
+package dev.right.filez.model;
 
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +17,8 @@ public class User {
     private AccessLevel accessLevel;
     @Nullable
     private Long filesTotalSizeCap;
+    @Nullable
+    private String password;
 
     public enum AccessLevel {
         FULL, // can access all files, no restrictions and options from below
@@ -28,12 +30,22 @@ public class User {
         LOCAL, GOOGLE
     }
 
+    @Nullable
     public Long getFilesTotalSizeCap() {
         return filesTotalSizeCap;
     }
 
-    public void setFilesTotalSizeCap(Long filesTotalSizeCap) {
+    public void setFilesTotalSizeCap(@Nullable Long filesTotalSizeCap) {
         this.filesTotalSizeCap = filesTotalSizeCap;
+    }
+
+    @Nullable
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@Nullable String password) {
+        this.password = password;
     }
 
     public AccessLevel getAccessLevel() {
@@ -60,11 +72,12 @@ public class User {
         this.email = email;
     }
 
+    @Nullable
     public Long getProfileImageId() {
         return profileImageId;
     }
 
-    public void setProfileImageId(Long profileImageId) {
+    public void setProfileImageId(@Nullable Long profileImageId) {
         this.profileImageId = profileImageId;
     }
 

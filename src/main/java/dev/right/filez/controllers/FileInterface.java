@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileInterface {
     @GetMapping("/{fileId}")
     public ResponseEntity<?> download(
-            @RequestParam long fileId,
+            @PathVariable long fileId,
             Authentication auth
     ) {
 

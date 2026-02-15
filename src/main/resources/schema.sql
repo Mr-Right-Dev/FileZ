@@ -4,6 +4,8 @@ CREATE TABLE user (
     authProvider ENUM('LOCAL', 'GOOGLE') NOT NULL,
     profileImageId BIGINT,
     username VARCHAR(30) NOT NULL,
+    password VARCHAR(100),
     accessLevel ENUM('FULL', 'USER_MANAGEMENT', 'NORMAL') DEFAULT 'NORMAL' NOT NULL,
-        filesTotalSizeCap BIGINT -- null means no limit.
+    filesTotalSizeCap BIGINT, -- null means no limit.
+    creationTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
