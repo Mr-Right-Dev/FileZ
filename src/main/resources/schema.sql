@@ -7,5 +7,7 @@ CREATE TABLE user (
     password VARCHAR(100),
     accessLevel ENUM('FULL', 'USER_MANAGEMENT', 'NORMAL') DEFAULT 'NORMAL' NOT NULL,
     filesTotalSizeCap BIGINT, -- null means no limit.
-    creationTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    creationTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    locked BOOLEAN DEFUALT FALSE,
+    expireTime TIMESTAMP
 );

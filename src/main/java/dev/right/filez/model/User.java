@@ -4,6 +4,8 @@ import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+
 @Component
 @Scope("prototype")
 public class User {
@@ -19,6 +21,9 @@ public class User {
     private Long filesTotalSizeCap;
     @Nullable
     private String password;
+    private boolean locked;
+    @Nullable
+    private Timestamp expireTime;
 
     public enum AccessLevel {
         FULL, // can access all files, no restrictions and options from below
@@ -28,6 +33,23 @@ public class User {
 
     public enum AuthProvider {
         LOCAL, GOOGLE
+    }
+
+    @Nullable
+    public Timestamp getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(@Nullable Timestamp expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @Nullable

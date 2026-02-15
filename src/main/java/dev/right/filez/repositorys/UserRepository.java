@@ -30,6 +30,8 @@ public class UserRepository {
             user.setAccessLevel(User.AccessLevel.valueOf(rs.getString("accessLevel")));
             user.setFilesTotalSizeCap(rs.getLong("filesTotalSizeCap"));
             user.setPassword(rs.getString("password"));
+            user.setLocked(rs.getBoolean("locked"));
+            user.setExpireTime(rs.getTimestamp("expireTime"));
 
             return user;
         }
