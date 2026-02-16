@@ -22,19 +22,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public void processOAuthPostLogin(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("email");
-
-        User user = userRepository.getUserByEmail(email);
-        if (user != null) {
-            return;
-        }
-
-        user = new User();
-        user.setEmail(email);
-        user.setUsername(oAuth2User.getAttribute("name"));
-        user.setAuthProvider(User.AuthProvider.GOOGLE);
-        userRepository.save(user);
+    public User getRefreshUser(User user) {
+        return userRepository.getUserById(user.getUserId());
     }
 }

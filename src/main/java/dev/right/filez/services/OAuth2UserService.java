@@ -1,6 +1,7 @@
 package dev.right.filez.services;
 
 import dev.right.filez.model.User;
+import dev.right.filez.model.UserPrincipal;
 import dev.right.filez.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,8 +39,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Invalid credentials.");
         }
 
-        Set<GrantedAuthority> authoritySet = new HashSet<>(oAuth2User.getAuthorities());
+        UserPrincipal principal = new UserPrincipal(user);
+        principal.setAttributes(oAuth2User.getAttributes());
 
-        return new DefaultOAuth2User(authoritySet, attributes, "sub");
+        return principal;
     }
 }

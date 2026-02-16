@@ -64,4 +64,13 @@ public class UserRepository {
             return null;
         }
     }
+
+    @Nullable
+    public User getUserById(Long userId) {
+        try {
+            return template.queryForObject("SELECT * FROM user WHERE userId=? LIMIT 1;", new Object[]{userId}, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }

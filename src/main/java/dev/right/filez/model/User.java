@@ -1,6 +1,9 @@
 package dev.right.filez.model;
 
+import dev.right.filez.repositorys.UserRepository;
+import dev.right.filez.services.UserService;
 import jakarta.annotation.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +12,6 @@ import java.sql.Timestamp;
 @Component
 @Scope("prototype")
 public class User {
-
     private long userId;
     private String email;
     private AuthProvider authProvider;
@@ -118,4 +120,22 @@ public class User {
     public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", authProvider=" + authProvider +
+                ", profileImageId=" + profileImageId +
+                ", username='" + username + '\'' +
+                ", accessLevel=" + accessLevel +
+                ", filesTotalSizeCap=" + filesTotalSizeCap +
+                ", password='" + password + '\'' +
+                ", locked=" + locked +
+                ", expireTime=" + expireTime +
+                '}';
+    }
+
+
 }

@@ -38,9 +38,15 @@ public class SecurityConfig {
                 auth.requestMatchers("/api/**").authenticated();
                 auth.anyRequest().permitAll();
             })
-            .oauth2Login(withDefaults())
-                .userDetailsService(customUserDetailsService)
-            .formLogin(withDefaults())
+            .oauth2Login(oauth -> oauth
+                    .defaultSuccessUrl("/app/menu.html")
+                    .permitAll()
+            )
+            .userDetailsService(customUserDetailsService)
+            .formLogin(form -> form
+                    .defaultSuccessUrl("/app/menu.html")
+                    .permitAll()
+            )
             .build();
     }
 
