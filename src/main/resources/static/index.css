@@ -279,6 +279,35 @@ strong {
     }
 }
 
+#powered {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row wrap;
+    margin: 50px 0;
+    width: 100%;
+}
+
+#powered div {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: stretch;
+    flex-flow: column nowrap;
+    margin: 50px;
+}
+
+#powered div img {
+    flex-grow: 3;
+    width: 100%;
+    height: 100%;
+}
+
+#powered div p {
+    flex-grow: 1;
+}
+
 @media (max-width: 500px) {
     #login {
         left: 50%;
