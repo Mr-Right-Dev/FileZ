@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="pallet.css">
     <link rel="stylesheet" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FileZ</title>
 </head>
 <body>
+    <div id="credit">
+        <a href="https://codepen.io/soju22">Screen effect by Kevin Levron.</a>
+    </div>
+
     <button id="login" onclick="window.location.href = '/login'">
         <a>
             Login
@@ -20,8 +24,8 @@
 
     <div class="main-body">
         <section id="title">
-            <h1>FILE<strong>Z</strong></h1>
-            <p>
+            <h1 class="fadeIn" style="animation-delay: 0.1s">FILE<strong>Z</strong></h1>
+            <p class="fadeIn">
                 Welcome to FileZ, this is project with the goal of self-hosted file server.
                 <br>
                 And also multi-user service. Where the users can share file between them.
@@ -31,7 +35,7 @@
             <div class="glass-card glass-effect hover-card">
                 <div class="gloss"></div>
                 <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
-                    <img src="icons/group.svg" style="margin-right: 10px;">
+                    <img alt="Group of people icon" src="icons/group.svg" style="margin-right: 10px;">
                     <h1>Multiple Users</h1>
                 </header>
                 <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
@@ -41,28 +45,26 @@
             <div class="glass-card glass-effect hover-card">
                 <div class="gloss"></div>
                 <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
-                    <img src="icons/group.svg" style="margin-right: 10px;">
-                    <h1>Multiple Users</h1>
+                    <img alt="Slider icon" src="icons/control-slider.svg" style="margin-right: 10px;">
+                    <h1>Custom Limits</h1>
                 </header>
                 <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
-                    Create multiple accounts, upload and manage files, and share content securely between users.
+                    Set custom storage limits per account to ensure fair usage, prevent abuse, and manage server capacity efficiently.
                 </p>
             </div>
             <div class="glass-card glass-effect hover-card">
                 <div class="gloss"></div>
                 <header class="center-flex flex-row" style="justify-content: flex-start; width: 100%;">
-                    <img src="icons/group.svg" style="margin-right: 10px;">
-                    <h1>Multiple Users</h1>
+                    <img src="icons/open-book.svg" style="margin-right: 10px;">
+                    <h1>Open Source</h1>
                 </header>
                 <p style="max-width: 250px; font-size: 20px; font-weight: 300; margin-top: 10px;">
-                    Create multiple accounts, upload and manage files, and share content securely between users.
+                    Built with transparency at its core, the entire platform is fully open source. You can inspect the code, customize every detail, and host it your own way without restrictions.
                 </p>
             </div>
         </section>
     </div>
-    <div id="credit">
-        <a href="https://codepen.io/soju22">Screen effect by Kevin Levron.</a>
-    </div>
+
 
     <!-- https://codepen.io/soju22/pen/qEbdVjK screen effect creator -->
     <script type="module">

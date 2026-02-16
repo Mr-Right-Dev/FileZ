@@ -1,6 +1,8 @@
 body {
     background-color: var(--bg-dark);
-    color: var(--text)
+    color: var(--text);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 strong {
@@ -10,6 +12,7 @@ strong {
 .main-body {
     width: 100%;
     height: auto;
+    overflow: hidden;
     display: flex;
     align-content: center;
     align-items: center;
@@ -46,10 +49,10 @@ strong {
 
 #login {
     cursor: pointer;
-    height: 30px;
+    height: 40px;
     backdrop-filter: blur(8.8px);
     -webkit-backdrop-filter: blur(8.8px);
-    width: clamp(150px, 5%, 300px);
+    width: clamp(200px, 10%, 300px);
     background: rgba(255,255,255,0.1);
     color: var(--text);
     border-radius: 30px;
@@ -97,16 +100,20 @@ strong {
 
 #app {
     margin: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 
 #app {
-    height: 100vh;
     position: absolute;
-    width: 100%;
+    overflow-x: hidden;
     z-index: -1;
     font-family: "Montserrat", serif;
+}
+
+#app canvas {
+    width: 100%;
+    height: 100%;
 }
 
 #app a {
@@ -182,17 +189,18 @@ strong {
 }
 
 #credit {
-    width: 100%;
-    position: fixed;
-    bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;
     display: flex;
+    width: 100vw;
     align-items: center;
     align-content: center;
     justify-content: center;
+    flex-flow: column nowrap;
     background: linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.1));
-    padding: 10px 0;
+    padding: 10px 0 5px 0;
+    backdrop-filter: blur(10px);
+    z-index: 2;
+    position: fixed !important;
 }
 
 #credit a {
@@ -255,4 +263,26 @@ strong {
 .hover-card {
     position: relative;
     overflow: hidden;
+}
+
+.fadeIn {
+    animation: fadeIn 1s ease-out forwards;
+    transform: translateX(200px);
+}
+
+@keyframes fadeIn {
+    from {
+        transform: translateX(200px);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 500px) {
+    #login {
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: clamp(300px, 80%, 450px);
+    }
 }
