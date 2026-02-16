@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/pallet.css">
+    <link rel="stylesheet" href="/login.css">
+    <link rel="icon" href="/icons/fileZ.svg" type="image/svg">
+    <title>Login to FileZ</title>
+</head>
+<body>
+    <div id="app">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="loader" class="disable">
+        <p>LOADING...</p>
+        <!-- https://codepen.io/martinvd/pen/xbQJom -->
+        <div class="loader">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+    </div>
+
+    <div id="results">
+        <p class="error" th:if="${param.error}">
+            Invalid username or password.
+        </p>
+        <p class="logout" th:if="${param.logout}">
+            You have been logged out.
+        </p>
+    </div>
+
+    <h1 style="font-size: 50px; font-weight: normal; position: absolute; top: 10%; left: 50%; transform: translate(-50%, 0);">FileZ</h1>
+    <div class="form hover-card">
+        <h3 style="font-weight: 100; margin-bottom: 30px;">Login</h3>
+
+
+        <form method="POST" action="/login">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+
+            <div>
+                <input type="text" name="username" placeholder="Email"/>
+            </div>
+
+            <div>
+                <input type="password" name="password" placeholder="Password"/>
+            </div>
+
+            <button type="submit">
+                <a>
+                    Login
+                </a>
+            </button>
+
+            <div style="width: 95%; background: rgba(255,255,255,0.8); height: 1px; padding: 0; border: none;"></div>
+
+        </form>
+        <button onclick="window.location.href = '/oauth2/authorization/google'" style="height: 40px;">
+            <a style="display: flex; align-content: center; align-items: center; justify-content: center; flex-flow: row nowrap">
+                <?xml version="1.0" encoding="UTF-8"?><svg style="margin-right: 10px;" width="24px" height="24px" viewBox="0 0 24 24" stroke-width="1.5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM12.1089 6.25C8.88798 6.25 6.25 8.8097 6.25 12C6.25 15.1903 8.88798 17.75 12.1089 17.75C14.051 17.75 15.4498 17.0204 16.3707 15.9532C17.2716 14.9091 17.6697 13.5969 17.7482 12.4687L17.804 11.6667H12.841V13.1667H16.1291C15.9762 13.8087 15.6873 14.4492 15.2351 14.9732C14.6127 15.6945 13.636 16.25 12.1089 16.25C9.68593 16.25 7.75 14.3317 7.75 12C7.75 9.66828 9.68593 7.75 12.1089 7.75C13.2437 7.75 14.275 8.1725 15.048 8.86272L16.047 7.74382C15.0065 6.81472 13.622 6.25 12.1089 6.25Z" fill="currentColor"></path></svg>
+                Login with Google
+            </a>
+        </button>
+    </div>
+
+    <script type="module" src="/tubes.js"></script>
+    <script>
+        document.querySelectorAll("button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.getElementById("loader").classList.remove("disable");
+            });
+        })
+
+        const result = document.querySelector("#results p")
+        if (result) {
+            setTimeout(() => {
+                result.classList.add("hide")
+            }, 8000)
+        }
+    </script>
+</body>
+</html>

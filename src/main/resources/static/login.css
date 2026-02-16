@@ -1,0 +1,320 @@
+body {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    height: 100vh;
+    color: var(--text);
+}
+
+#app {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    top: 0;
+}
+
+#app canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.form {
+    overflow: hidden;
+    transition: 0.4s;
+    padding: 20px 10px;
+    /* From https://css.glass */
+    background: rgba(149, 149, 149, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    width: clamp(250px, 20%, 400px);
+}
+
+
+.form form {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    width: 100%;
+}
+
+.form form div {
+    width: 86%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(30px);
+    color: var(--text);
+    margin: 10px 0;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    padding: 8px;
+    border-radius: 40px;
+    transition: 0.5s;
+    border: 1px solid rgba(255,255,255,0);
+}
+
+.form form div:hover {
+    border: solid rgba(255,255,255,0.4) 1px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(30px);
+}
+
+.form div:has(input:focus) {
+    border: solid 1px white;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(100px);
+}
+
+.form div input {
+    border: none;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    font-size: 15px;
+}
+
+.form div:hover input::placeholder {
+    color: var(--text);
+}
+
+.form div:focus input::placeholder {
+    color: var(--text);
+}
+
+button {
+    cursor: pointer;
+    height: 35px;
+    width: 93%;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text);
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0);
+    overflow: hidden;
+    z-index: 1;
+    transition: 0.1s;
+    padding: 8px;
+    margin: 10px 0;
+}
+
+button a {
+    z-index: 2;
+    transition: 0.1s;
+}
+
+button svg {
+    color: white;
+    fill: white;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 102%;
+    transition: 0.1s;
+    background: rgba(255,255,255,0.8);
+    color: var(--text);
+    top: 50%;
+    transform: translate(0, -50%);
+    left: 0;
+}
+
+button:hover::after {
+    width: 100%;
+}
+
+button:hover a {
+    color: var(--bg)
+}
+
+button:hover {
+    scale: 1.03;
+    border-color: var(--text);
+    border-radius: 30px;
+    font-weight: bolder;
+}
+
+button:hover svg {
+    fill: black;
+    color: black;
+}
+
+button:focus svg {
+    fill: black;
+    color: black;
+}
+
+button:focus::after {
+    width: 100%;
+}
+
+button:focus a {
+    color: var(--bg);
+}
+
+button:focus {
+    scale: 1.03;
+    border-color: var(--text);
+    border-radius: 30px;
+    font-weight: bolder;
+}
+
+button a {
+    display: flex; align-content: center; align-items: center; justify-content: center; flex-flow: row nowrap;
+}
+
+#loader {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(30px);
+    background: rgba(0,0,0,0.2);
+    transition: 1s;
+    flex-flow: column nowrap;
+}
+
+#loader p {
+    margin-bottom: 25px;
+    font-size: 35px;
+    font-weight: lighter;
+}
+
+#loader.disable {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    perspective: 800px;
+}
+
+.inner {
+    position: absolute;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.inner.one {
+    left: 0%;
+    top: 0%;
+    animation: rotate-one 1s linear infinite;
+    border-bottom: 3px solid #EFEFFA;
+}
+
+.inner.two {
+    right: 0%;
+    top: 0%;
+    animation: rotate-two 1s linear infinite;
+    border-right: 3px solid #EFEFFA;
+}
+
+.inner.three {
+    right: 0%;
+    bottom: 0%;
+    animation: rotate-three 1s linear infinite;
+    border-top: 3px solid #EFEFFA;
+}
+
+@keyframes rotate-one {
+    0% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+    }
+    100% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+    }
+}
+
+@keyframes rotate-two {
+    0% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+    }
+    100% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+    }
+}
+
+@keyframes rotate-three {
+    0% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+    }
+    100% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+    }
+}
+
+#results {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    animation: resultFadeIn 0.7s forwards;
+}
+
+@keyframes resultFadeIn {
+    from {
+        transform: translate(-50%, -300px);
+    }
+    to {
+        transform: translate(-50%, 0);
+    }
+}
+
+#results p {
+    width: clamp(300px, 80%, 1300px);
+    height: 40px;
+    border-radius: 10px;
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    transition: 5s;
+}
+
+#results .error {
+    background: rgba(255,10,10, 0.2);
+    border: 1px solid rgba(255,0,0,0.01);
+}
+
+#results .logout {
+    background: rgba(10,255,10, 0.2);
+    border: 1px solid rgba(0,255,0,0.01);
+}
+
+#results p.hide {
+    opacity: 0;
+}
