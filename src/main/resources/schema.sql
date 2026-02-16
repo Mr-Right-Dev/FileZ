@@ -11,3 +11,8 @@ CREATE TABLE user (
     locked BOOLEAN DEFUALT FALSE,
     expireTime TIMESTAMP
 );
+
+-- DEFAULT ADMIN CREDENTIALS
+-- INSERT INTO user (username, email, authProvider, password, accessLevel) VALUES ('admin', 'super', 'LOCAL', '$2a$12$nb9iyDykIAkq31YAy37J1.NTz/UDghP3AHhT7pcLuFSBwwR2f03W.','FULL');
+-- Email: super
+-- Password @admin

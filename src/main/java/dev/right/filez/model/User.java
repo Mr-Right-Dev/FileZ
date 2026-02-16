@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Scope("prototype")
@@ -137,5 +139,17 @@ public class User {
                 '}';
     }
 
-
+    public Map<String, Object> toMap() {
+        return Map.ofEntries(
+                Map.entry("userId", this.userId),
+                Map.entry("email", this.email),
+                Map.entry("authProvider", this.authProvider),
+                Map.entry("profileImageId", this.profileImageId != null ? this.profileImageId : -1),
+                Map.entry("username", this.username),
+                Map.entry("accessLevel", this.accessLevel),
+                Map.entry("fileTotalSizeCap", this.filesTotalSizeCap != null ? this.filesTotalSizeCap : -1),
+                Map.entry("locked", this.locked),
+                Map.entry("expireTime", this.expireTime != null ? this.expireTime : -1)
+        );
+    }
 }

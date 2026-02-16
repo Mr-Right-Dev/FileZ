@@ -4,6 +4,7 @@ import dev.right.filez.model.User;
 import dev.right.filez.model.UserPrincipal;
 import dev.right.filez.repositorys.UserRepository;
 import dev.right.filez.services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,7 @@ public class UserInterface {
         User user = userService.getRefreshUser(userPrincipal.getUser());
         return ResponseEntity
                 .ok(
-                        Map.ofEntries(
-                                Map.entry("username", user.getUsername()),
-                                Map.entry("email", user.getEmail()),
-                                Map.entry("authProvider", user.getAuthProvider()),
-                                Map.entry("userId", user.getUserId())
-                        )
+                        user.toMap()
                 );
     }
 
@@ -65,5 +61,14 @@ public class UserInterface {
                 .ok(
                         user.toString()
                 );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> list(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        return ResponseEntity
+                    .status(HttpStatus.NOT_IMPLEMENTED)
+                .build();
     }
 }
