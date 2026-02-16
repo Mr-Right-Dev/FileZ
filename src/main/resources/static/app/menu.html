@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>FileZ: Menu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../icons/fileZ.svg" type="image/svg">
+    <link rel="stylesheet" href="../pallet.css">
+    <link rel="stylesheet" href="css/menu.css">
 </head>
 <body>
-<h1>If you're seeing this. You're supposed to be authenticated.</h1>
+    <div id="loader">
+        <p>LOADING...</p>
+        <!-- https://codepen.io/martinvd/pen/xbQJom -->
+        <div class="loader">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+    </div>
+    <div id="app">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="main-body">
+
+    </div>
+
+    <!-- https://codepen.io/soju22/pen/qEbdVjK screen effect creator -->
+    <script type="module" src="../tubes.js"></script>
 </body>
 </html>
