@@ -3,6 +3,7 @@ package dev.right.filez.repositorys;
 import dev.right.filez.model.User;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -57,6 +58,10 @@ public class UserRepository {
 
     @Nullable
     public User getUserByEmail(String email) {
-        return template.queryForObject("SELECT * FROM user WHERE email=? LIMIT 1;", new Object[]{email}, rowMapper);
+        try {
+            return template.queryForObject("SELECT * FROM user WHERE email=? LIMIT 1;", new Object[]{email}, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }

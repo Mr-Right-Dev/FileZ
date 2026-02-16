@@ -3,6 +3,7 @@ package dev.right.filez.services;
 import dev.right.filez.model.UserPrincipal;
 import dev.right.filez.repositorys.UserRepository;
 import dev.right.filez.model.User;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,10 +20,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@Nullable String email) throws UsernameNotFoundException {
+        if (email == null) {
+            throw new UsernameNotFoundException("Invalid credentials.");
+        }
         User user = userRepository.getUserByEmail(email);
+
         if (user == null) {
-            throw new UsernameNotFoundException("Email or password invalid.");
+            throw new UsernameNotFoundException("Invalid credentials.");
         }
 
         return new UserPrincipal(user);
