@@ -1,5 +1,6 @@
 package dev.right.filez.model;
 
+import dev.right.filez.Application;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,6 +53,12 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 
     @Override
     public boolean isAccountNonLocked() {
+        if (user.getAccessLevel() == User.AccessLevel.FULL) {
+            if (Boolean.parseBoolean(Application.dotenv.get("disable-full-access-accounts"))) {
+                return false;
+            }
+        }
+
         return !user.isLocked();
     }
 

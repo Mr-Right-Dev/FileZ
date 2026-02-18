@@ -1,0 +1,60 @@
+package dev.right.filez.repositorys;
+
+import dev.right.filez.model.ShareTable;
+import dev.right.filez.model.User;
+import jakarta.annotation.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Repository
+public class ShareTableRepository {
+    private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<ShareTable> rowMapper = new RowMapper<ShareTable>() {
+        @Override
+        public ShareTable mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ShareTable shareTable = new ShareTable();
+
+            shareTable.setConnectionId(rs.getLong("connectionId"));
+            shareTable.setItemId(rs.getLong("itemId"));
+            shareTable.setItemOwnerId(rs.getLong("itemOwnerId"));
+            shareTable.setUserId(rs.getLong("userId"));
+            shareTable.setAccessType(ShareTable.AccessType.valueOf(rs.getString("accessType")));
+
+            return shareTable;
+        }
+    };
+
+    @Autowired
+    public ShareTableRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void createNew(ShareTable shareTable) {
+        jdbcTemplate.update(
+                "INSERT INTO shareTables (itemId, itemOwnerId, userId, accessType) VALUES (?,?,?,?);",
+                shareTable.getItemId(),
+                shareTable.getItemOwnerId(),
+                shareTable.getUserId(),
+                shareTable.getAccessType().name()
+        );
+    }
+
+    @Nullable
+    public ShareTable getShareTableOfFileForUser(Long itemId, User user) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT * FROM shareTables WHERE itemId=? AND userId=? LIMIT 1;",
+                    new Object[]{itemId, user.getUserId()},
+                    rowMapper
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+}
