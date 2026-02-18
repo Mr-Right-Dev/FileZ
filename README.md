@@ -13,7 +13,7 @@ It hosts a web application that let you (and your family/friend) share files/bac
     * `CREATE DATABASE filez;`
   * Grant all permissions to the `fileZ` to the database `filez`.
     * `GRANT ALL PRIVILEGES ON filez.* TO 'fileZ'@'localhost';`
-* Create an `.evn.properties` on the root of the project.
+* Create an `.env.properties` on the root of the project.
   * Use this template:
 ```properties
 # Google Login
@@ -29,15 +29,22 @@ spring.datasource.password=<your mysql password>
 spring.servlet.multipart.max-file-size=1GB
 spring.servlet.multipart.max-request-size=10GB
 ```
+* Create an `.env` on the root too.
+  * Use this template:
+```.env
+# Account settings:
+disable-full-access-accounts=true
 
-# How to limit storage and file types:
-The config of these values inside the code, the default is not block any file types.
-But you can change that.
-* Goto: `src/main/java/dev/right/filez/services/FileUploaderService.java`:
-  * And on the first variables you can set up the allowed mime type with the allowed extensions allowed.
-> [!IMPORTANT]
-> That if the set size is equal or less as 1, it will allow all types.  
-* Use application.properties to limit how much data per upload.
+# File Settings:
+files-storage-path=default
+files-types-whitelist=true
+# For the whitelist work you must match the extensions.
+files-whitelist-mimetypes=image/jpg, image/png 
+files-whitelist-extensions=.jpg, .png
+```
+
+# How to limit file transfer:
+* Use `.env.properties` to limit how much data per upload.
 
 # Database
 > [!NOTE]
