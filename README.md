@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> THIS PROJECT IS NOT COMPLETE YET.
+
 # What it does:
 It hosts a web application that let you (and your family/friend) share files/backup for "FREE".
 * You can share files with other people.
