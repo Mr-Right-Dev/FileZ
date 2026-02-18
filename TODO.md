@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This being made on my free time, and lots of coffee.
+
 # TODO:
 Stuff I have to do.
 
@@ -14,3 +17,6 @@ Stuff I have to do.
 * File Sharing menu.
 * Account management.
 * Self profile settings.
+
+> [!NOTE]
+> This project might be abandoned.
