@@ -1,5 +1,6 @@
 package dev.right.filez.repositorys;
 
+import dev.right.filez.model.Item;
 import dev.right.filez.model.ShareTable;
 import dev.right.filez.model.User;
 import jakarta.annotation.Nullable;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 
 @Repository
 public class ShareTableRepository {
@@ -37,7 +39,7 @@ public class ShareTableRepository {
 
     public void createNew(ShareTable shareTable) {
         jdbcTemplate.update(
-                "INSERT INTO shareTables (itemId, itemOwnerId, userId, accessType) VALUES (?,?,?,?);",
+                "INSERT INTO sharedTables (itemId, itemOwnerId, userId, accessType) VALUES (?,?,?,?);",
                 shareTable.getItemId(),
                 shareTable.getItemOwnerId(),
                 shareTable.getUserId(),
@@ -49,9 +51,24 @@ public class ShareTableRepository {
     public ShareTable getShareTableOfFileForUser(Long itemId, User user) {
         try {
             return jdbcTemplate.queryForObject(
-                    "SELECT * FROM shareTables WHERE itemId=? AND userId=? LIMIT 1;",
-                    new Object[]{itemId, user.getUserId()},
-                    rowMapper
+                    "SELECT * FROM sharedTables WHERE itemId=? AND userId=? LIMIT 1;",
+                    rowMapper,
+                    itemId,
+                    user.getUserId()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public Set<Item> getUserHaveAnySharedFileWithUser(User owner, User target) {
+        try {
+            return jdbcTemplate.query(
+                    "SELECT connectionId FROM sharedTables WHERE itemOwnerId=? AND userId=? LIMIT 1;",
+                    rowMapper,
+                    owner.getUserId(),
+                    target.getUserId()
             );
         } catch (EmptyResultDataAccessException e) {
             return null;

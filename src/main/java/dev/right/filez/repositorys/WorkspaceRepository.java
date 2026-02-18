@@ -36,7 +36,11 @@ public class WorkspaceRepository {
     @Nullable
     public UserWorkspace getByUserId(Long userId) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM userWorkspace WHERE userId=? LIMIT 1;", new Object[]{userId}, rowMapper);
+            return jdbcTemplate.queryForObject(
+                    "SELECT * FROM userWorkspace WHERE userId=? LIMIT 1;",
+                    rowMapper,
+                    userId
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -45,7 +49,11 @@ public class WorkspaceRepository {
     @Nullable
     public UserWorkspace getByWorkspaceId(Long workspaceId) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM userWorkspace WHERE workspaceId=? LIMIT 1;", new Object[]{workspaceId}, rowMapper);
+            return jdbcTemplate.queryForObject(
+                    "SELECT * FROM userWorkspace WHERE workspaceId=? LIMIT 1;",
+                    rowMapper,
+                    workspaceId
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

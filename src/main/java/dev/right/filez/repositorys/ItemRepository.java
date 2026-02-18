@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class ItemRepository {
@@ -42,8 +43,8 @@ public class ItemRepository {
         try {
             return jdbcTemplate.queryForObject(
                     "SELECT * FROM item WHERE itemId=?;",
-                    new Object[]{itemId},
-                    rowMapper
+                    rowMapper,
+                    itemId
             );
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -66,6 +67,73 @@ public class ItemRepository {
         jdbcTemplate.update(
                 "DELETE FROM item WHERE fileId=? LIMIT 1;", // Note: that 'LIMIT 1' is a hardcoded safeguard.
                 itemId
+        );
+    }
+
+    @Nullable
+    public List<Item> getDescendants(Item item) {
+        String sql = """
+       
+                WITH RECURSIVE descendants AS (
+                         
+                             SELECT *, 0 AS depth
+                             FROM item
+                             WHERE itemId = ?
+                         
+                             UNION ALL
+                         
+                             SELECT i.*, d.depth + 1
+                             FROM item i
+                             JOIN descendants d
+                                 ON i.parentId = d.itemId
+                         )
+                         
+                         SELECT *
+                         FROM descendants;
+                         
+        """; // yeah pain.
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    rowMapper,
+                    item.getItemId()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public boolean isDescendantOf(Item parent, Item child) {
+        String sql = """
+        WITH RECURSIVE descendants AS (
+
+            SELECT *
+            FROM item
+            WHERE itemId = ?
+
+            UNION ALL
+
+            SELECT i.*
+            FROM item i
+            JOIN descendants d
+                ON i.parentId = d.itemId
+        )
+
+        SELECT EXISTS(
+            SELECT 1
+            FROM descendants
+            WHERE itemId = ?
+        )
+        """;
+
+        return Boolean.TRUE.equals(
+                jdbcTemplate.queryForObject(
+                        sql,
+                        Boolean.class,
+                        parent.getItemId(),
+                        child.getItemId()
+                )
         );
     }
 }

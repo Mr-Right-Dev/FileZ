@@ -15,9 +15,6 @@ import java.sql.SQLException;
 public class UserRepository {
     private JdbcTemplate template;
 
-    public JdbcTemplate getTemplate() {
-        return template;
-    }
     public static RowMapper<User> rowMapper = new RowMapper<User>() {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -33,6 +30,7 @@ public class UserRepository {
             user.setPassword(rs.getString("password"));
             user.setLocked(rs.getBoolean("locked"));
             user.setExpireTime(rs.getTimestamp("expireTime"));
+            user.setAccumulatedFileSize(rs.getLong("accumulatedFileSize"));
 
             return user;
         }
@@ -45,21 +43,27 @@ public class UserRepository {
 
     public void save(User user) {
         template.update(
-                "INSERT INTO user (email, authProvider, profileImageId, username, accessLevel, filesTotalSizeCap, password) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO user (email, authProvider, profileImageId, username, accessLevel, filesTotalSizeCap, password, locked, expireTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 user.getEmail(),
                 user.getAuthProvider(),
                 user.getProfileImageId(),
                 user.getUsername(),
                 user.getAccessLevel().name(),
                 user.getFilesTotalSizeCap(),
-                user.getPassword()
+                user.getPassword(),
+                user.isLocked(),
+                user.getExpireTime()
         );
     }
 
     @Nullable
     public User getUserByEmail(String email) {
         try {
-            return template.queryForObject("SELECT * FROM user WHERE email=? LIMIT 1;", new Object[]{email}, rowMapper);
+            return template.queryForObject(
+                    "SELECT * FROM user WHERE email=? LIMIT 1;",
+                    rowMapper,
+                    email
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -68,7 +72,11 @@ public class UserRepository {
     @Nullable
     public User getUserById(Long userId) {
         try {
-            return template.queryForObject("SELECT * FROM user WHERE userId=? LIMIT 1;", new Object[]{userId}, rowMapper);
+            return template.queryForObject(
+                    "SELECT * FROM user WHERE userId=? LIMIT 1;",
+                    rowMapper,
+                    userId
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

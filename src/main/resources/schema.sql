@@ -11,6 +11,8 @@ CREATE TABLE user (
     locked BOOLEAN DEFAULT FALSE,
     expireTime TIMESTAMP,
     accountCreator BIGINT DEFAULT -1,
+    accumulatedFileSize BIGINT DEFAULT 0,
+
     UNIQUE (userId)
 );
 

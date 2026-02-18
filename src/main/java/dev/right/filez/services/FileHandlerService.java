@@ -4,11 +4,14 @@ import dev.right.filez.Application;
 import dev.right.filez.model.Item;
 import dev.right.filez.model.User;
 import dev.right.filez.repositorys.ItemRepository;
+import dev.right.filez.repositorys.ShareTableRepository;
+import dev.right.filez.repositorys.UserRepository;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -20,11 +23,15 @@ public class FileHandlerService {
     private final ItemRepository itemRepository;
     private final FileUploaderService fileUploaderService;
     private final Tika tika = new Tika();
+    private final UserRepository userRepository;
+    private final ShareTableRepository shareTableRepository;
 
     @Autowired
-    public FileHandlerService(ItemRepository itemRepository, FileUploaderService fileUploaderService) {
+    public FileHandlerService(ItemRepository itemRepository, FileUploaderService fileUploaderService, UserRepository userRepository, ShareTableRepository shareTableRepository) {
         this.itemRepository = itemRepository;
         this.fileUploaderService = fileUploaderService;
+        this.userRepository = userRepository;
+        this.shareTableRepository = shareTableRepository;
     }
 
     private void validateFile(MultipartFile file) throws IOException {
@@ -82,7 +89,27 @@ public class FileHandlerService {
         return item;
     }
 
-    public boolean canUserWriteOn(User user, Long parentId) {
+    public boolean canUserWriteOn(User user, Long parentId) throws FileNotFoundException {
+        Item parent = itemRepository.loadItemById(parentId);
+        if (parent == null) {
+            throw new FileNotFoundException("Parent not found.");
+        }
+
+        if (parent.getOwnerId() == user.getUserId()) {
+            return true;
+        }
+
+        User owner = userRepository.getUserById(parent.getOwnerId());
+        if (owner == null) {
+            // wat.
+            throw new FileNotFoundException("Parent not found.");
+        }
+        if (!shareTableRepository.doesUserHaveAnySharedFileWithUser(owner, user)) {
+            return false; // Saves many queries.
+        }
+
+
+
         return false;
     }
 }

@@ -9,6 +9,8 @@ It hosts a web application that let you (and your family/friend) share files/bac
 
 
 # How to set up:
+> [!IMPORTANT]
+> MySQL 8.0+ is REQUIRED.
 * Install MySQL.    
   * Create a user called `fileZ` and set your password.
     * `CREATE USER 'fileZ'@'localhost' IDENTIFIED BY 'your_password';`

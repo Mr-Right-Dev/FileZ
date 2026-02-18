@@ -28,6 +28,7 @@ public class User {
     private boolean locked;
     @Nullable
     private Timestamp expireTime;
+    private Long accumulatedFileSize;
 
     public enum AccessLevel {
         FULL, // can access all files, no restrictions and options from below
@@ -123,20 +124,12 @@ public class User {
         this.authProvider = authProvider;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", email='" + email + '\'' +
-                ", authProvider=" + authProvider +
-                ", profileImageId=" + profileImageId +
-                ", username='" + username + '\'' +
-                ", accessLevel=" + accessLevel +
-                ", filesTotalSizeCap=" + filesTotalSizeCap +
-                ", password='" + password + '\'' +
-                ", locked=" + locked +
-                ", expireTime=" + expireTime +
-                '}';
+    public Long getAccumulatedFileSize() {
+        return accumulatedFileSize;
+    }
+
+    public void setAccumulatedFileSize(Long accumulatedFileSize) {
+        this.accumulatedFileSize = accumulatedFileSize;
     }
 
     public Map<String, Object> toMap() {
@@ -149,7 +142,8 @@ public class User {
                 Map.entry("accessLevel", this.accessLevel),
                 Map.entry("fileTotalSizeCap", this.filesTotalSizeCap != null ? this.filesTotalSizeCap : -1),
                 Map.entry("locked", this.locked),
-                Map.entry("expireTime", this.expireTime != null ? this.expireTime : -1)
+                Map.entry("expireTime", this.expireTime != null ? this.expireTime : -1),
+                Map.entry("accumulatedFileSize", this.accumulatedFileSize)
         );
     }
 }
