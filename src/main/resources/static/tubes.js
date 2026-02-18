@@ -2,6 +2,8 @@
 // Attribution — You must give appropriate credit.
 // Non Commercial — You may not use the material for commercial purposes.
 
+// https://codepen.io/soju22/pen/qEbdVjK screen effect creator
+
 import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
 
 const app = TubesCursor(document.getElementById('canvas'), {

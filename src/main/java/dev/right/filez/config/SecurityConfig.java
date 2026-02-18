@@ -39,13 +39,13 @@ public class SecurityConfig {
                 auth.anyRequest().permitAll();
             })
             .oauth2Login(oauth -> oauth
-                    .defaultSuccessUrl("/app/menu.html", true)
+                    .defaultSuccessUrl("/app/menu", true)
                     .loginPage("/login")
                     .permitAll()
             )
             .userDetailsService(customUserDetailsService)
             .formLogin(form -> form
-                    .defaultSuccessUrl("/app/menu.html", true)
+                    .defaultSuccessUrl("/app/menu", true)
                     .loginProcessingUrl("/login")
                     .loginPage("/login")
                     .permitAll()

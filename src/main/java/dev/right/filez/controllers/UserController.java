@@ -4,24 +4,18 @@ import dev.right.filez.model.User;
 import dev.right.filez.model.UserPrincipal;
 import dev.right.filez.repositorys.UserRepository;
 import dev.right.filez.services.UserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/user")
-public class UserInterface {
+public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired

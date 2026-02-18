@@ -50,7 +50,7 @@ public class UserRepository {
                 user.getAuthProvider(),
                 user.getProfileImageId(),
                 user.getUsername(),
-                user.getAccessLevel(),
+                user.getAccessLevel().name(),
                 user.getFilesTotalSizeCap(),
                 user.getPassword()
         );
