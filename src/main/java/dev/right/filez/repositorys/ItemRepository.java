@@ -92,6 +92,22 @@ public class ItemRepository {
     }
 
     @Nullable
+    public Item getItemByNameAndParentId(String itemName, @Nullable Long parentId, Long workspaceId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT * FROM item WHERE itemName=? AND parentId<=>? AND itemType=? AND workspaceId=?;",
+                    rowMapper,
+                    itemName,
+                    parentId,
+                    "FOLDER",
+                    workspaceId
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Nullable
     public List<Item> getDescendants(Item item) {
         String sql = """
        
@@ -107,6 +123,7 @@ public class ItemRepository {
                              FROM item i
                              JOIN descendants d
                                  ON i.parentId = d.itemId
+                             WHERE d.depth < 100
                          )
                          
                          SELECT *

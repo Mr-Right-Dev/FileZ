@@ -7,18 +7,31 @@ import dev.right.filez.repositorys.UserRepository;
 import dev.right.filez.repositorys.WorkspaceRepository;
 import dev.right.filez.services.FileHandlerService;
 import dev.right.filez.services.FilePermissionService;
+import dev.right.filez.services.FileUploaderService;
 import dev.right.filez.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api/file")
@@ -29,25 +42,150 @@ public class FileController {
     private final FileHandlerService fileHandlerService;
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
+    private final FileUploaderService fileUploaderService;
 
     @Autowired
-    public FileController(FilePermissionService filePermissionService, UserRepository userRepository, UserService userService, ItemRepository itemRepository, FileHandlerService fileHandlerService, WorkspaceRepository workspaceRepository) {
+    public FileController(FilePermissionService filePermissionService, UserRepository userRepository, UserService userService, ItemRepository itemRepository, FileHandlerService fileHandlerService, WorkspaceRepository workspaceRepository, FileUploaderService fileUploaderService) {
         this.filePermissionService = filePermissionService;
         this.userService = userService;
         this.itemRepository = itemRepository;
         this.fileHandlerService = fileHandlerService;
         this.workspaceRepository = workspaceRepository;
         this.userRepository = userRepository;
+        this.fileUploaderService = fileUploaderService;
     }
 
-    @GetMapping("/{fileId}")
+    @GetMapping("/{fileId}/data")
+    public ResponseEntity<?> getData(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable long fileId
+    ) {
+        Item item = itemRepository.loadItemById(fileId);
+        if (item == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        User refreshRequester = userService.getRefreshUser(userPrincipal.getUser());
+        if (refreshRequester == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
+        }
+
+        try {
+            if (!filePermissionService.canUserOn(refreshRequester, item, ShareTable.AccessType.READ, item.getWorkspaceId())) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .build();
+            }
+        } catch (FileNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        return ResponseEntity
+                .ok(
+                        item.toMap()
+                );
+    }
+
+    @GetMapping("/{fileId}/folder")
+    public void downloadFolder(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable long fileId,
+            HttpServletResponse response
+    ) throws IOException {
+        Item item = itemRepository.loadItemById(fileId);
+        if (item == null) {
+            response.setStatus(404);
+            return;
+        }
+        if (item.getItemType() == Item.ItemType.ITEM) {
+            response.setStatus(404);
+            return;
+        }
+
+        User refreshRequester = userService.getRefreshUser(userPrincipal.getUser());
+        if (refreshRequester == null) {
+            response.setStatus(401);
+            return;
+        }
+
+        try {
+            if (!filePermissionService.canUserOn(refreshRequester, item, ShareTable.AccessType.READ, item.getWorkspaceId())) {
+                response.setStatus(404);
+                return;
+            }
+        } catch (FileNotFoundException e) {
+            response.setStatus(404);
+            return;
+        }
+
+       fileHandlerService.streamFolderAsZip(response, item);
+    }
+
+    @GetMapping("/{fileId}/resource")
     public ResponseEntity<?> download(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable long fileId
     ) {
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .build();
+        Item item = itemRepository.loadItemById(fileId);
+        if (item == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+        if (item.getItemType() == Item.ItemType.FOLDER) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        User refreshRequester = userService.getRefreshUser(userPrincipal.getUser());
+        if (refreshRequester == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
+        }
+
+        try {
+            if (!filePermissionService.canUserOn(refreshRequester, item, ShareTable.AccessType.READ, item.getWorkspaceId())) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .build();
+            }
+        } catch (FileNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        try {
+            UrlResource resource = fileUploaderService.getFileResource(item.getItemPath());
+
+            if (item.getMimeType() == null) {
+                item.setMimeType("");
+            }
+
+            return ResponseEntity
+                    .ok()
+                    .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + item.getItemName() + "\""
+                    )
+                    .contentType(item.getMimeType().isEmpty() ? MediaType.APPLICATION_OCTET_STREAM : MediaType.parseMediaType(item.getMimeType()))
+                    .contentLength(item.getSize())
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 
     @PostMapping("/upload")

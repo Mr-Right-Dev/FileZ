@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Component
 @Scope("prototype")
@@ -29,6 +30,20 @@ public class Item {
     public enum ItemType {
         ITEM,
         FOLDER
+    }
+
+    public Map<String, Object> toMap() {
+        return Map.ofEntries(
+                Map.entry("itemId", this.itemId != null ? this.itemId : 0),
+                Map.entry("itemName", this.itemName != null ? this.itemName : ""),
+                Map.entry("itemType", this.itemType.name()),
+                Map.entry("ownerId", this.ownerId),
+                Map.entry("creatingDate", this.creatingDate),
+                Map.entry("mimeType", this.mimeType != null ? this.mimeType : ""),
+                Map.entry("size", this.size != null ? this.size : 0),
+                Map.entry("parentId", this.parentId != null ? this.parentId : 0),
+                Map.entry("workspaceId", this.workspaceId)
+        );
     }
 
     @Nullable
