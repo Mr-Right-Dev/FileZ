@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" action="/api/file/upload" enctype="multipart/form-data">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
+        <input type="number" id="parentId" name="parentId">
+        <input type="number" id="workspaceId" name="workspaceId">
+        <input type="file" id="files" name="files" multiple webkitdirectory>
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

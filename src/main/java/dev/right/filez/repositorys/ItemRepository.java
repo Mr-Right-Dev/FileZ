@@ -6,10 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -27,7 +31,9 @@ public class ItemRepository {
             item.setItemPath(rs.getString("itemPath"));
             item.setCreatingDate(rs.getTimestamp("creatingDate"));
             item.setMimeType(rs.getString("mimeType"));
-            item.setSize(rs.getLong("size"));
+            item.setSize(rs.getObject("size", Long.class));
+            item.setParentId(rs.getObject("parentId", Long.class));
+            item.setWorkspaceId(rs.getLong("workspaceId"));
 
             return item;
         }
@@ -51,16 +57,31 @@ public class ItemRepository {
         }
     }
 
-    public void save(Item item) {
+    @Nullable
+    public Long save(Item item) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         jdbcTemplate.update(
-                "INSERT INTO item (itemName, itemType, ownerId, itemPath, mimeType, size) VALUES (?, ?, ?, ?, ?, ?);",
-                item.getItemName(),
-                item.getItemType().name(),
-                item.getOwnerId(),
-                item.getItemPath(),
-                item.getMimeType(),
-                item.getSize()
+                connection -> {
+                    PreparedStatement ps = connection.prepareStatement("INSERT INTO item (itemName, itemType, ownerId, itemPath, mimeType, size, parentId, workspaceId) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", new String[]{"itemId"});
+                    ps.setString(1, item.getItemName());
+                    ps.setString(2, item.getItemType().name());
+                    ps.setLong(3, item.getOwnerId());
+                    ps.setString(4, item.getItemPath());
+                    ps.setString(5, item.getMimeType());
+                    ps.setObject(6, item.getSize(), Types.BIGINT);
+                    ps.setObject(7, item.getParentId(), Types.BIGINT);
+                    ps.setLong(8, item.getWorkspaceId());
+                    return ps;
+                },
+                keyHolder
         );
+
+        try {
+            return keyHolder.getKey().longValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public void deleteItemById(Long itemId) {

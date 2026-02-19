@@ -33,6 +33,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+            /*.csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/api/file/upload")
+            )*/
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers("/app/**").authenticated();
                 auth.requestMatchers("/api/**").authenticated();

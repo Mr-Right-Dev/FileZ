@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -61,17 +62,12 @@ public class ShareTableRepository {
         }
     }
 
-    @Nullable
-    public Set<Item> getUserHaveAnySharedFileWithUser(User owner, User target) {
-        try {
-            return jdbcTemplate.query(
-                    "SELECT connectionId FROM sharedTables WHERE itemOwnerId=? AND userId=? LIMIT 1;",
-                    rowMapper,
-                    owner.getUserId(),
-                    target.getUserId()
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    public List<ShareTable> getUserSharedFileWithUser(User owner, User target) {
+        return jdbcTemplate.query(
+                "SELECT connectionId FROM sharedTables WHERE itemOwnerId=? AND userId=? LIMIT 1;",
+                rowMapper,
+                owner.getUserId(),
+                target.getUserId()
+        );
     }
 }

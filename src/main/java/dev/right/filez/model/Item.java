@@ -22,10 +22,13 @@ public class Item {
     private String mimeType;
     @Nullable
     private Long size;
+    @Nullable
+    private Long parentId;
+    private Long workspaceId;
 
     public enum ItemType {
         ITEM,
-        FILE
+        FOLDER
     }
 
     @Nullable
@@ -95,5 +98,22 @@ public class Item {
 
     public void setSize(@Nullable Long size) {
         this.size = size;
+    }
+
+    @Nullable
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(@Nullable Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public Long getWorkspaceId() {
+        return workspaceId;
+    }
+
+    public void setWorkspaceId(Long workspaceId) {
+        this.workspaceId = workspaceId;
     }
 }

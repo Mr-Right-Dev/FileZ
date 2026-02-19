@@ -14,4 +14,9 @@ public class PagesController {
     public String redirectMenu() {
         return "menu";
     }
+
+    @GetMapping("/app/upload_test")
+    public String redirectUploadTest() {
+        return "uploadTest";
+    }
 }

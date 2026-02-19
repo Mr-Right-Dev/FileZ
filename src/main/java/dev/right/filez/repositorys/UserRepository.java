@@ -81,4 +81,12 @@ public class UserRepository {
             return null;
         }
     }
+
+    public void incrementStorageUsageValue(long amount, User user) {
+        template.update(
+                "UPDATE user SET accumulatedFileSize=? WHERE userId=? LIMIT 1;",
+                user.getAccumulatedFileSize()+amount,
+                user.getUserId()
+        );
+    }
 }

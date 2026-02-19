@@ -6,12 +6,12 @@ import dev.right.filez.model.User;
 import dev.right.filez.repositorys.ItemRepository;
 import dev.right.filez.repositorys.ShareTableRepository;
 import dev.right.filez.repositorys.UserRepository;
+import jakarta.annotation.Nullable;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -62,19 +62,20 @@ public class FileHandlerService {
             }
         }
 
-        String browserMime = file.getContentType();
+        /*String browserMime = file.getContentType();
 
         if (browserMime != null && !browserMime.equalsIgnoreCase(realMime)) {
-            throw new SecurityException("Invalid mime.");
-        }
+            throw new SecurityException("Invalid mime: "+browserMime);
+        }*/
     }
 
-    public Item uploadItem(MultipartFile file, Long ownerId) throws IOException {
+    public Item uploadItem(MultipartFile file, Long ownerId, Long workspaceId, String originalName) throws IOException {
         validateFile(file);
+
 
         String storedPath;
         try (InputStream inputStream = file.getInputStream()) {
-            storedPath = fileUploaderService.storeFile(inputStream, file.getOriginalFilename());
+            storedPath = fileUploaderService.storeFile(inputStream, originalName);
         }
 
         Item item = new Item();
@@ -83,33 +84,37 @@ public class FileHandlerService {
         item.setOwnerId(ownerId);
         item.setItemType(Item.ItemType.ITEM);
         item.setSize(file.getSize());
+        item.setWorkspaceId(workspaceId);
+        item.setItemName(originalName);
 
-        itemRepository.save(item);
+        Long id = itemRepository.save(item);
+        item.setItemId(id);
 
         return item;
     }
 
-    public boolean canUserWriteOn(User user, Long parentId) throws FileNotFoundException {
-        Item parent = itemRepository.loadItemById(parentId);
-        if (parent == null) {
-            throw new FileNotFoundException("Parent not found.");
+    public Item saveFileAndFolders(MultipartFile file, @Nullable Long parentId, User sender, Long workspaceId) throws IOException, NullPointerException {
+        String relativePath = file.getOriginalFilename();
+
+        String[] parts = relativePath.split("/");
+
+        @Nullable
+        Long folderParentId = parentId;
+
+        for (int i = 0; i < parts.length; i++) {
+            String folderName = parts[i];
+
+            Item folder = new Item();
+
+            folder.setParentId(parentId);
+            folder.setOwnerId(sender.getUserId());
+            folder.setItemType(Item.ItemType.FOLDER);
+            folder.setItemName(folderName);
+            folder.setWorkspaceId(workspaceId);
+
+            folderParentId = itemRepository.save(folder);
         }
 
-        if (parent.getOwnerId() == user.getUserId()) {
-            return true;
-        }
-
-        User owner = userRepository.getUserById(parent.getOwnerId());
-        if (owner == null) {
-            // wat.
-            throw new FileNotFoundException("Parent not found.");
-        }
-        if (!shareTableRepository.doesUserHaveAnySharedFileWithUser(owner, user)) {
-            return false; // Saves many queries.
-        }
-
-
-
-        return false;
+        return uploadItem(file, sender.getUserId(), workspaceId, parts[parts.length-1]);
     }
 }

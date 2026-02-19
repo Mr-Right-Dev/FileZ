@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class UserWorkspace {
     private Long workspaceId;
-    private Long ownerId;
+    private Long userId;
 
     public Long getWorkspaceId() {
         return workspaceId;
@@ -17,11 +17,11 @@ public class UserWorkspace {
         this.workspaceId = workspaceId;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

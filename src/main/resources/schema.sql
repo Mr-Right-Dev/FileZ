@@ -23,6 +23,17 @@ CREATE TABLE user (
 -- Attention: Recommended to lock account after set up.
 
 -- FILE SYSTEM
+-- 1 -> 1
+-- 1 workspace per user
+CREATE TABLE userWorkspace (
+       workspaceId BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+       userId BIGINT NOT NULL,
+
+       UNIQUE (userId),
+       FOREIGN KEY (userId)
+           REFERENCES user(userId),
+       UNIQUE (workspaceId)
+);
 
 -- I'm not using references cuz
 -- File clean up needs to be done by server.
@@ -32,7 +43,7 @@ CREATE TABLE user (
 -- it's gonna be assumed that the parent is the workspace.
 CREATE TABLE item (
     itemId BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    itemName VARCHAR(30),
+    itemName VARCHAR(50),
     itemType ENUM('ITEM', 'FOLDER'),
     mimeType VARCHAR(30),
     ownerId BIGINT NOT NULL,
@@ -40,7 +51,10 @@ CREATE TABLE item (
     itemPath VARCHAR(100), -- NOTE only ITEM have an actual item path.
     creatingDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     parentId BIGINT,
+    workspaceId BIGINT NOT NULL,
 
+    FOREIGN KEY (workspaceId)
+        REFERENCES userWorkspace(workspaceId),
     FOREIGN KEY (ownerId)
         REFERENCES user(userId),
     FOREIGN KEY (parentId)
@@ -67,14 +81,3 @@ CREATE TABLE sharedTables (
     UNIQUE (connectionId)
 );
 
--- 1 -> 1
--- 1 workspace per user
-CREATE TABLE userWorkspace (
-    workspaceId BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    userId BIGINT NOT NULL,
-
-    UNIQUE (userId),
-    FOREIGN KEY (userId)
-        REFERENCES user(userId),
-    UNIQUE (workspaceId)
-);

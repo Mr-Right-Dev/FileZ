@@ -33,6 +33,9 @@ spring.datasource.password=<your mysql password>
 # File size limits
 spring.servlet.multipart.max-file-size=1GB
 spring.servlet.multipart.max-request-size=10GB
+spring.servlet.multipart.file-size-threshold=0
+server.tomcat.max-part-count=100
+
 ```
 * Create an `.env` on the root too.
   * Use this template:
