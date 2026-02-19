@@ -91,7 +91,14 @@ public class FileController {
 
         UserWorkspace workspace = workspaceRepository.getByWorkspaceId(workspaceId);
 
-        User workspaceOwner = userRepository.getUserById(workspace.getUserId());
+        User workspaceOwner;
+        try {
+            workspaceOwner = userRepository.getUserById(workspace.getUserId());
+        } catch (NullPointerException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
 
         try {
             if (!filePermissionService.canUserOn(requester, parent, ShareTable.AccessType.READ_WRITE, workspaceId)) {
@@ -105,15 +112,26 @@ public class FileController {
                     .status(HttpStatus.NOT_FOUND)
                     .build();
         }
-        //TODO list results per file name.
+
         ArrayList<String> successList = new ArrayList<>();
         ArrayList<String> failedList = new ArrayList<>();
 
         long totalSize = 0L;
         long cap = Long.MAX_VALUE;
-        Long workspaceCap = workspaceOwner.getFilesTotalSizeCap();
-        if (workspaceCap != null) {
-            cap = workspaceCap - workspaceOwner.getAccumulatedFileSize();
+        boolean hasCap = false;
+        try {
+            Long workspaceCap = workspaceOwner.getFilesTotalSizeCap();
+            if (workspaceCap != null) {
+                if (workspaceCap != 0) {
+                    System.out.println(workspaceCap);
+                    cap = workspaceCap - workspaceOwner.getAccumulatedFileSize();
+                    System.out.println(cap);
+                    hasCap = true;
+                }
+
+            }
+        } catch (NullPointerException e) {
+
         }
 
         for (MultipartFile file : files) {
@@ -123,13 +141,16 @@ public class FileController {
                     continue;
                 };
 
-                if (file.getSize()+totalSize >= cap) {
-                    failedList.add(file.getOriginalFilename());
-                    continue;
+                if (hasCap) {
+                    if ((file.getSize()+totalSize) >= cap) {
+                        failedList.add(file.getOriginalFilename());
+                        continue;
+                    }
                 }
 
+                totalSize += file.getSize();
+
                 Item item = fileHandlerService.saveFileAndFolders(file, parentId, requester, workspaceId);
-                totalSize += item.getSize();
 
                 successList.add(file.getOriginalFilename());
             } catch (Exception e) {
@@ -143,7 +164,10 @@ public class FileController {
         if (failedList.size() == files.length) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
+                    .body( Map.ofEntries(
+                            Map.entry("successfully", successList.toArray()),
+                            Map.entry("failed", failedList)
+                    ));
         }
         return ResponseEntity
                 .ok(
