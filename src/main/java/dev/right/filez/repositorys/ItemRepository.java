@@ -111,58 +111,54 @@ public class ItemRepository {
     public List<Item> getDescendants(Item item) {
         String sql = """
        
-                WITH RECURSIVE descendants AS (
-                         
-                             SELECT *, 0 AS depth
-                             FROM item
-                             WHERE itemId = ?
-                         
-                             UNION ALL
-                         
-                             SELECT i.*, d.depth + 1
-                             FROM item i
-                             JOIN descendants d
-                                 ON i.parentId = d.itemId
-                             WHERE d.depth < 100
-                         )
-                         
-                         SELECT *
-                         FROM descendants;
+        WITH RECURSIVE descendants AS (
+             SELECT *, 0 AS depth
+             FROM item
+             WHERE itemId = ?
+         
+             UNION ALL
+         
+             SELECT i.*, d.depth + 1
+             FROM item i
+             JOIN descendants d
+                 ON i.parentId = d.itemId
+             WHERE d.depth < 100
+         )
+         
+         SELECT *
+         FROM descendants;
                          
         """; // yeah pain.
 
-        try {
-            return jdbcTemplate.query(
-                    sql,
-                    rowMapper,
-                    item.getItemId()
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return jdbcTemplate.query(
+                sql,
+                rowMapper,
+                item.getItemId()
+        );
     }
 
     public boolean isDescendantOf(Item parent, Item child) {
         String sql = """
-        WITH RECURSIVE descendants AS (
-
-            SELECT *
-            FROM item
-            WHERE itemId = ?
-
-            UNION ALL
-
-            SELECT i.*
-            FROM item i
-            JOIN descendants d
-                ON i.parentId = d.itemId
-        )
-
-        SELECT EXISTS(
-            SELECT 1
-            FROM descendants
-            WHERE itemId = ?
-        )
+        
+                WITH RECURSIVE descendants AS (
+                
+                    SELECT itemId, parentId
+                    FROM item
+                    WHERE itemId = ?
+                
+                    UNION ALL
+                
+                    SELECT i.itemId, i.parentId
+                    FROM item i
+                    JOIN descendants d
+                        ON i.parentId = d.itemId
+                )
+                
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM descendants
+                    WHERE itemId = ?
+                );
         """;
 
         return Boolean.TRUE.equals(

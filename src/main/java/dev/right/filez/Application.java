@@ -40,7 +40,6 @@ public class Application {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Application boot init.");
 		dotenv = Dotenv
 				.configure()
 				.directory(".")

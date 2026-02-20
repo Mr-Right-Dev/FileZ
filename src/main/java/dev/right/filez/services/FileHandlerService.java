@@ -173,7 +173,7 @@ public class FileHandlerService {
 
         for(Item itemObj : items) {
 
-            String path = buildPath(item, map);
+            String path = buildPath(itemObj, map);
 
             if (itemObj.getItemType() == Item.ItemType.FOLDER) {
 
@@ -184,7 +184,7 @@ public class FileHandlerService {
                 zip.closeEntry();
 
             } else {
-                if (item.getItemPath() == null) {
+                if (itemObj.getItemPath() == null) {
                     continue;
                 }
 
@@ -193,7 +193,7 @@ public class FileHandlerService {
                 );
 
                 InputStream fileStream =
-                        fileUploaderService.getFileResource(item.getItemPath()).getInputStream();
+                        fileUploaderService.getFileResource(itemObj.getItemPath()).getInputStream();
 
                 fileStream.transferTo(zip);
 

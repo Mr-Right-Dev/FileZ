@@ -1,3 +1,9 @@
+SET foreign_key_checks = 0;
+DROP DATABASE IF EXISTS filez;
+CREATE DATABASE filez;
+USE filez;
+SET foreign_key_checks = 1;
+
 CREATE TABLE user (
     userId BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     email VARCHAR(100) NOT NULL,

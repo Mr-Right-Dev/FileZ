@@ -52,7 +52,7 @@ public class ShareTableRepository {
     public ShareTable getShareTableOfFileForUser(Long itemId, User user) {
         try {
             return jdbcTemplate.queryForObject(
-                    "SELECT * FROM sharedTables WHERE itemId=? AND userId=? LIMIT 1;",
+                    "SELECT * FROM sharedTables WHERE itemId=? AND userId=?",
                     rowMapper,
                     itemId,
                     user.getUserId()
@@ -64,7 +64,7 @@ public class ShareTableRepository {
 
     public List<ShareTable> getUserSharedFileWithUser(User owner, User target) {
         return jdbcTemplate.query(
-                "SELECT connectionId FROM sharedTables WHERE itemOwnerId=? AND userId=? LIMIT 1;",
+                "SELECT * FROM sharedTables WHERE itemOwnerId=? AND userId=? LIMIT 1;",
                 rowMapper,
                 owner.getUserId(),
                 target.getUserId()
